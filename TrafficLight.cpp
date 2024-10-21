@@ -34,16 +34,16 @@ class TrafficLight {
           
         case YELLOW:
           digitalWrite(led_red, LOW);
-          digitalWrite(led_yellow, LOW);
-          digitalWrite(led_green, HIGH);
+          digitalWrite(led_yellow, HIGH);
+          digitalWrite(led_green, LOW);
           delay(5000); 
           currentState = GREEN; 
           break;
           
         case GREEN:
           digitalWrite(led_red, LOW);
-          digitalWrite(led_yellow, HIGH);
-          digitalWrite(led_green, LOW);
+          digitalWrite(led_yellow, LOW);
+          digitalWrite(led_green, HIGH);
           delay(20000);  
           currentState = RED;  
           break;
