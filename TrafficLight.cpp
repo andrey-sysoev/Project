@@ -50,13 +50,52 @@ class TrafficLight {
       }
     }
 };
+class PedestrianLight {
+  private:
+    int led_ped_red;
+    int led_ped_green;
+    int pedestrianButton;
+    int switchState = 0;  
 
+  public:
+    PedestrianLight(int red_ped, int green_ped, int button) {
+      led_ped_red = red_ped;
+      led_ped_green = green_ped;
+      pedestrianButton = button;
+    }
+
+    
+    void setup() {
+      pinMode(led_ped_red, OUTPUT);    
+      pinMode(led_ped_green, OUTPUT);  
+      pinMode(pedestrianButton, INPUT_PULLUP);    
+    }
+
+    
+    void manage() {
+      switchState = digitalRead(pedestrianButton);  
+
+      if (switchState == LOW) {  
+        digitalWrite(led_ped_red, LOW);    
+        digitalWrite(led_ped_green, HIGH);
+        delay (5000);
+      } else {  
+        digitalWrite(led_ped_red, HIGH);   
+        digitalWrite(led_ped_green, LOW);
+      }
+    }
+};
+
+
+PedestrianLight pedestrianLight(5, 6, 7);  
 TrafficLight trafficLight(2, 3, 4);
 
 void setup() {
   trafficLight.setup();
+  pedestrianLight.setup();
 }
 
 void loop() {
   trafficLight.switchLights();
+   pedestrianLight.manage();
 }
