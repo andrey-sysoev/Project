@@ -1,101 +1,63 @@
 #define RED 100
 #define YELLOW 200
 #define GREEN 300
+#define PED_GREEN 400
+#define PED_RED 500
 
 class TrafficLight {
   private:
-    int led_red;
-    int led_yellow;
-    int led_green;
-    int currentState=RED;
-    
+    int led_red, led_yellow, led_green;
+    const long redDuration = 10000;
+    const long yellowDuration = 5000;
+    const long greenDuration = 10000;
+    int currentState = RED;
+    unsigned long previousMillis = 0;
+
   public:
-    TrafficLight(int red, int yel, int gre) {
+    TrafficLight(int red, int yellow, int green) {
       led_red = red;
-      led_yellow = yel;
-      led_green = gre;
+      led_yellow = yellow;
+      led_green = green;
     }
 
     void setup() {
       pinMode(led_red, OUTPUT);
       pinMode(led_yellow, OUTPUT);
       pinMode(led_green, OUTPUT);
+      digitalWrite(led_red, HIGH);
+      digitalWrite(led_yellow, LOW);
+      digitalWrite(led_green, LOW);
     }
 
-    void switchLights() {
+    void update() {
+      unsigned long currentMillis = millis();
+
       switch (currentState) {
         case RED:
-          digitalWrite(led_red, HIGH);
-          digitalWrite(led_yellow, LOW);
-          digitalWrite(led_green, LOW);
-          delay(20000);  
-          currentState = YELLOW;  
+          if (currentMillis - previousMillis >= redDuration) {
+            previousMillis = currentMillis;
+            currentState = YELLOW;
+            digitalWrite(led_red, LOW);
+            digitalWrite(led_yellow, HIGH);
+          }
           break;
-          
+
         case YELLOW:
-          digitalWrite(led_red, LOW);
-          digitalWrite(led_yellow, HIGH);
-          digitalWrite(led_green, LOW);
-          delay(5000); 
-          currentState = GREEN; 
+          if (currentMillis - previousMillis >= yellowDuration) {
+            previousMillis = currentMillis;
+            currentState = GREEN;
+            digitalWrite(led_yellow, LOW);
+            digitalWrite(led_green, HIGH);
+          }
           break;
-          
+
         case GREEN:
-          digitalWrite(led_red, LOW);
-          digitalWrite(led_yellow, LOW);
-          digitalWrite(led_green, HIGH);
-          delay(20000);  
-          currentState = RED;  
+          if (currentMillis - previousMillis >= greenDuration) {
+            previousMillis = currentMillis;
+            currentState = RED;
+            digitalWrite(led_green, LOW);
+            digitalWrite(led_red, HIGH);
+          }
           break;
       }
     }
-};
-class PedestrianLight {
-  private:
-    int led_ped_red;
-    int led_ped_green;
-    int pedestrianButton;
-    int switchState = 0;  
-
-  public:
-    PedestrianLight(int red_ped, int green_ped, int button) {
-      led_ped_red = red_ped;
-      led_ped_green = green_ped;
-      pedestrianButton = button;
-    }
-
-    
-    void setup() {
-      pinMode(led_ped_red, OUTPUT);    
-      pinMode(led_ped_green, OUTPUT);  
-      pinMode(pedestrianButton, INPUT_PULLUP);    
-    }
-
-    
-    void manage() {
-      switchState = digitalRead(pedestrianButton);  
-
-      if (switchState == LOW) {  
-        digitalWrite(led_ped_red, LOW);    
-        digitalWrite(led_ped_green, HIGH);
-        delay (5000);
-      } else {  
-        digitalWrite(led_ped_red, HIGH);   
-        digitalWrite(led_ped_green, LOW);
-      }
-    }
-};
-
-
-PedestrianLight pedestrianLight(5, 6, 7);  
-TrafficLight trafficLight(2, 3, 4);
-
-void setup() {
-  trafficLight.setup();
-  pedestrianLight.setup();
-}
-
-void loop() {
-  trafficLight.switchLights();
-   pedestrianLight.manage();
-}
