@@ -2,16 +2,20 @@
 #define YELLOW_GREEN 200
 #define YELLOW_RED 400
 #define GREEN 300
-
+#define PED_GREEN 500
+#define PED_RED 600
 class TrafficLight {
   private:
-    int led_red, led_yellow, led_green;
+    int led_red, led_yellow, led_green, buttonPin;
     const long redDuration = 10000;
     const long yellowDuration = 5000;
     const long greenDuration = 10000;
+    const long pedGreenDuration = 6000;
     int currentState = RED;
     unsigned long previousMillis = 0;
-
+    bool buttonPressed = false;
+    bool pedestrianCycleActive = false;
+    unsigned long pedGreenStartTime = 0;
   public:
     TrafficLight(int red, int yellow, int green) {
       led_red = red;
