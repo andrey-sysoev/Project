@@ -75,7 +75,7 @@ class TrafficLight {
     }
 };
 
-TrafficLight trafficLight(2, 3, 4);
+TrafficLight trafficLight(2, 3, 4, 7);
 
 void setup() {
   Serial.begin(9600);
@@ -83,7 +83,6 @@ void setup() {
 }
 
 void loop() {
+  trafficLight.checkButtonPress();
   trafficLight.update();
-  int trafficState = trafficLight.getCurrentState();
-  Serial.write(trafficState);
 }
