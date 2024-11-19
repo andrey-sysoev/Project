@@ -4,6 +4,7 @@
 #define GREEN 300
 #define PED_GREEN 500
 #define PED_RED 600
+
 class TrafficLight {
   private:
     int led_red, led_yellow, led_green, buttonPin;
@@ -16,62 +17,83 @@ class TrafficLight {
     bool buttonPressed = false;
     bool pedestrianCycleActive = false;
     unsigned long pedGreenStartTime = 0;
+
   public:
-    TrafficLight(int red, int yellow, int green) {
+    TrafficLight(int red, int yellow, int green, int button) {
       led_red = red;
       led_yellow = yellow;
       led_green = green;
+      buttonPin = button;
     }
 
     void setup() {
       pinMode(led_red, OUTPUT);
       pinMode(led_yellow, OUTPUT);
       pinMode(led_green, OUTPUT);
+      pinMode(buttonPin, INPUT_PULLUP);
       digitalWrite(led_red, HIGH);
       digitalWrite(led_yellow, LOW);
       digitalWrite(led_green, LOW);
     }
 
-    void update() {
-      unsigned long currentMillis = millis();
-      switch (currentState) {
-        case RED:
-          if (currentMillis - previousMillis >= redDuration) {
-            previousMillis = currentMillis;
-            currentState = YELLOW_GREEN;
-            digitalWrite(led_red, LOW);
-            digitalWrite(led_yellow, HIGH);
-          }
-          break;
-        case YELLOW_GREEN:
-          if (currentMillis - previousMillis >= yellowDuration) {
-            previousMillis = currentMillis;
-            currentState = GREEN;
-            digitalWrite(led_yellow, LOW);
-            digitalWrite(led_green, HIGH);
-          }
-          break;
-        case GREEN:
-          if (currentMillis - previousMillis >= greenDuration) {
-            previousMillis = currentMillis;
-            currentState = YELLOW_RED;
-            digitalWrite(led_green, LOW);
-            digitalWrite(led_yellow, HIGH);
-          }
-          break;
-        case YELLOW_RED:
-          if (currentMillis - previousMillis >= yellowDuration) {
-            previousMillis = currentMillis;
-            currentState = RED;
-            digitalWrite(led_yellow, LOW);
-            digitalWrite(led_red, HIGH);
-          }
-          break;
+    void checkButtonPress() {
+      if (digitalRead(buttonPin) == LOW && !buttonPressed && !pedestrianCycleActive) {
+        buttonPressed = true;
       }
     }
 
-    int getCurrentState() {
-      return currentState;
+    void update() {
+      unsigned long currentMillis = millis();
+
+      if (buttonPressed && currentState == RED && !pedestrianCycleActive) {
+        pedestrianCycleActive = true;
+        buttonPressed = false;
+        pedGreenStartTime = currentMillis;
+        Serial.println(PED_GREEN);  
+      }
+
+      if (pedestrianCycleActive && currentMillis - pedGreenStartTime >= pedGreenDuration) {
+        pedestrianCycleActive = false;
+        Serial.println(PED_RED);  
+      }
+
+      if (!pedestrianCycleActive) {  
+        switch (currentState) {
+          case RED:
+            if (currentMillis - previousMillis >= redDuration) {
+              previousMillis = currentMillis;
+              currentState = YELLOW_GREEN;
+              digitalWrite(led_red, LOW);
+              digitalWrite(led_yellow, HIGH);
+            }
+            break;
+          case YELLOW_GREEN:
+            if (currentMillis - previousMillis >= yellowDuration) {
+              previousMillis = currentMillis;
+              currentState = GREEN;
+              digitalWrite(led_yellow, LOW);
+              digitalWrite(led_green, HIGH);
+            }
+            break;
+          case GREEN:
+            if (currentMillis - previousMillis >= greenDuration) {
+              previousMillis = currentMillis;
+              currentState = YELLOW_RED;
+              digitalWrite(led_green, LOW);
+              digitalWrite(led_yellow, HIGH);
+            }
+            break;
+          case YELLOW_RED:
+            if (currentMillis - previousMillis >= yellowDuration) {
+              previousMillis = currentMillis;
+              currentState = RED;
+              digitalWrite(led_yellow, LOW);
+              digitalWrite(led_red, HIGH);
+            }
+            break;
+        }
+        Serial.println(currentState);  
+      }
     }
 };
 
