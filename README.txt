@@ -1,4 +1,5 @@
-This is a traffic light system project with implementaion of pedastrain light. The system has state transitons for a trafficlights and control over pedestrian light with a button.
+This is a traffic light system project with the implementation of pedestrian light. The system has state transitions for traffic light and control over pedestrian light with a button.
+
 Requirements:
 1. 2 Arduino boards.
 2. Wires.
