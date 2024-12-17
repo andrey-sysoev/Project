@@ -47,45 +47,41 @@ class TrafficLight {
             Serial.write(100); 
             buttonPressed = false;
           }
-         digitalWrite(led_yellow, LOW);
-         digitalWrite(led_red, HIGH);
-          
-        if (currentMillis - previousMillis >= redDuration) {
+          digitalWrite(led_yellow, LOW);
+          digitalWrite(led_red, HIGH);
+
+          if (currentMillis - previousMillis >= redDuration) {
             previousMillis = currentMillis;
             currentState = YELLOW;
-            
           }
           break;
 
         case YELLOW:
-        digitalWrite(led_yellow, HIGH);
-        Serial.write(200);
-        delay(2000);
-        digitalWrite(led_red, LOW);
-        
+          digitalWrite(led_yellow, HIGH);
+          Serial.write(200);
+          digitalWrite(led_red, LOW);
+
           if (currentMillis - previousMillis >= yellowDuration) {
             previousMillis = currentMillis;
             currentState = GREEN;
-            
           }
           break;
 
         case GREEN:
-        digitalWrite(led_yellow, LOW);
-        digitalWrite(led_green, HIGH);
-          
-        if (currentMillis - previousMillis >= greenDuration) {
+          digitalWrite(led_yellow, LOW);
+          digitalWrite(led_green, HIGH);
+
+          if (currentMillis - previousMillis >= greenDuration) {
             previousMillis = currentMillis;
             currentState = YELLOW_RED;
-            
           }
           break;
 
         case YELLOW_RED:
-        digitalWrite(led_green, LOW);
-        digitalWrite(led_yellow, HIGH);
-          
-        if (currentMillis - previousMillis >= yellowDuration) {
+          digitalWrite(led_green, LOW);
+          digitalWrite(led_yellow, HIGH);
+
+          if (currentMillis - previousMillis >= yellowDuration) {
             previousMillis = currentMillis;
             currentState = RED;
           }
@@ -94,14 +90,20 @@ class TrafficLight {
     }
 };
 
-TrafficLight trafficLight(2, 3, 4, 7);
+
+TrafficLight trafficLight_d1(2, 3, 4, 7);  
+TrafficLight trafficLight_d2(5, 6, 8, 9);
 
 void setup() {
-  Serial.begin(9600); 
-  trafficLight.setup();
+  Serial.begin(9600);
+  trafficLight_d1.setup();
+  trafficLight_d2.setup();
 }
 
 void loop() {
-  trafficLight.checkButtonPress();
-  trafficLight.update();
+  trafficLight_d1.checkButtonPress();
+  trafficLight_d1.update();
+
+  trafficLight_d2.checkButtonPress();
+  trafficLight_d2.update();
 }
